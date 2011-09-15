@@ -54,12 +54,117 @@ Science and Engineering: Python + NumPy/SciPy/Matplotlib}
 %
 Python for Scientific and Engineering Computing
 %
-}
-\begin{itemize}
+} \large
+What are the traits of a futuristic computing platform for scientific and
+engineering applications:
+\begin{itemize} \large
   \item Productive.
-  \item Robust.
-  \item Maintainable.
+  \begin{itemize} \large
+    \item Code quickly.  Short time to delivery.
+    \item Versatile in built-in and 3rd-party libraries.
+  \end{itemize}
+  \item Robust and maintainable.
+  \begin{itemize} \large
+    \item Deliver correct and easy-to-be-maintained code.
+  \end{itemize}
   \item Reasonably fast.
+  \begin{itemize} \large
+    \item Easy to be optimized by a high-performance language, e.g., C or
+    Fortran.
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{
+%
+Basic Python Scientific Tool Chain
+%
+}
+\begin{itemize} \large
+  \item NumPy: \url{http://numpy.scipy.org/}
+  \begin{itemize} \large
+    \item The core part is N-dimensional arrays, which are defined in
+    \texttt{numpy.ndarray}.
+    \item The N-dimensional arrays serve as the foundation for all
+    scientific computing tasks in Python.
+  \end{itemize}
+  \item SciPy: \url{http://www.scipy.org/}
+  \begin{itemize} \large
+    \item Provide calculation functionalities for scientific computing tasks,
+    including: Linear algebra, equation solving, ODE integration,
+    interpolation, special functions, Fourier transform, signal processing,
+    etc.
+  \end{itemize}
+  \item Matplotlib: \url{http://matplotlib.sourceforge.net/}
+  \begin{itemize} \large
+    \item Two-dimensional plotting: Line, polar, bar, X-Y, pie, etc.
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{
+%
+Python + NumPy + SciPy + MPL = Better MxxLAB
+%
+}
+\begin{itemize} \large
+  \item The basic layer: (i) Array operation (NumPy), (ii) calculation tools
+  (SciPy), and (iii) visualization/presentation (Matplotlib).
+  \item Advanced tools:
+  \begin{itemize} \large
+    \item Complementary functionalities to SciPy: SciKits
+    (\url{http://scikits.appspot.com/}).
+    \item Symbolic mathematics: SymPy (\url{http://sympy.org/}).
+    \item Statistical computing: statlib
+    (\url{http://code.google.com/p/python-statlib/}).
+    \item General-purpose GPU computing:
+    \href{http://mathema.tician.de/software/pycuda}{PyCUDA} and
+    \href{http://mathema.tician.de/software/pyopencl}{PyOpenCL}.
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{
+%
+Python Facilitates Software Engineering
+%
+}
+\begin{itemize} \large
+  \item Language features:
+  \begin{itemize} \large
+    \item Multi-paradigm: object-oriented, procedural, and functional.
+    \item Meta-classing.
+    \item Abundant armament for developing maintainable code.
+  \end{itemize}
+  \item Production tools:
+  \begin{itemize} \large
+    \item Documentation: docutils and sphinx.
+    \item Unit tests: built-in framework and \texttt{nosetests}.
+    \item Continuous integration: buildbot.
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{
+%
+Optimization by Using C
+%
+}
+\begin{itemize} \large
+  \item Use Python constructs.
+  \begin{itemize} \large
+    \item Built-in containers: \texttt{tuple}, \texttt{list}, \texttt{dict},
+    \texttt{set}.
+    \item \texttt{numpy.ndarray} supports many operations written in
+    pre-compiled C code.
+  \end{itemize}
+  \item Write C code yourself.
+  \begin{itemize} \large
+    \item Develop a C extension.
+    \item Use Cython.
+    \item Write C and then load by using \texttt{ctypes}.
+    \item Write C++ and then interface by using swig or boost.python.
+  \end{itemize}
 \end{itemize}
 \end{frame}
 
