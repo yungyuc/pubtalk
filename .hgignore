@@ -35,6 +35,7 @@ solvcon.log
 *.ps
 *.spl
 *.glo
+*.vrb
 *.zip
 *_eps/
 tmp/

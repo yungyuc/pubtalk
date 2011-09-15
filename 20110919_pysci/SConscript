@@ -30,6 +30,7 @@ for dname in [
         OUTDIR=EPSDIR, EXT='.png', DPI=300))
 ## result figures.
 for dname in [
+    'result_plt',
 ]:
     allfigs.extend(env.Imconvert(Glob('%s/*.png'%dname),
         OUTDIR=EPSDIR, EXT='.eps', DPI=96, FORCE_CONVERT=True,
