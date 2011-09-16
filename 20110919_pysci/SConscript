@@ -2,7 +2,7 @@ import sys
 Import('env', 'LineCounter')
 
 PROJNAME = 'pysci'
-DEFNAMES = ['slides']
+DEFNAMES = ['slides', 'welcome']
 DOCNAMES = DEFNAMES + []
 EPSDIR = '%s_eps' % PROJNAME
 TEXDEP = []
