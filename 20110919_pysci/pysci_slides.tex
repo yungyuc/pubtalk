@@ -63,13 +63,14 @@ Futuristic Scientific Computing
 Python for Scientific and Engineering Computing
 %
 } \large
-What are the traits of a futuristic computing platform for scientific and
+Python shows the traits of a futuristic computing platform for scientific and
 engineering applications:
 \begin{itemize} \large
   \item Productive.
   \begin{itemize} \large
-    \item Code quickly.  Short time to delivery.
+    \item Concise syntax for rapid development.
     \item Versatile in built-in and 3rd-party libraries.
+    \item Short time to delivery.
   \end{itemize}
   \item Robust and maintainable.
   \begin{itemize} \large
@@ -77,8 +78,9 @@ engineering applications:
   \end{itemize}
   \item Reasonably fast.
   \begin{itemize} \large
-    \item Easy to be optimized by a high-performance language, e.g., C or
-    Fortran.
+    \item Avoid performance penalties.
+    \item I/O intensive: Pure Python is sufficient.
+    \item Computational intensive: Easy to be optimized by using C or Fortran.
   \end{itemize}
 \end{itemize}
 \end{frame}
@@ -138,11 +140,13 @@ Python Facilitates Software Engineering
 %
 }
 \begin{itemize} \large
-  \item Language features:
+  \item The language provides abundant armament for developing maintainable
+  code.
   \begin{itemize} \large
     \item Multi-paradigm: object-oriented, procedural, and functional.
+    \item Built-in containers: \texttt{dict}, \texttt{tuple}, \texttt{list}, 
+    \texttt{set}, etc.
     \item Meta-classing.
-    \item Abundant armament for developing maintainable code.
   \end{itemize}
   \item Production tools:
   \begin{itemize} \large
@@ -161,8 +165,7 @@ Optimization by Using C
 \begin{itemize} \large
   \item Use Python constructs.
   \begin{itemize} \large
-    \item Built-in containers: \texttt{tuple}, \texttt{list}, \texttt{dict},
-    \texttt{set}.
+    \item The operations of the built-in containers are implemented in C.
     \item \texttt{numpy.ndarray} supports many operations written in
     pre-compiled C code.
   \end{itemize}
@@ -236,6 +239,7 @@ Calculate Values of an Array
 Array Manipulation
 %
 }
+\small
 \begin{lstlisting}[language=Python]
 >>> mat = np.zeros((3,3), dtype='float64')
 >>> mat[1,2] = 3
@@ -419,9 +423,9 @@ Python for High-Performance Computing
   \hspace{0.01\textwidth}
   \includegraphics[height=0.3\textheight]{tesla_g300.eps}
 \end{center}
-\begin{itemize}
+\begin{itemize} \large
   \item New hardware boosts computing power.
-  \begin{itemize}
+  \begin{itemize} \large
     \item 1970-1990: Vector machines (Cray computers).
     \item 1990-200x: Clusters with MPI (10,000+ cores).
     \item Now: Many-core technology, e.g., general-purpose GPU clusters.
@@ -456,7 +460,7 @@ Hybrid Parallel Computing
   \end{itemize}
   \item A single language is not sufficient to model the hybrid system.
   \begin{itemize}
-    \item None of C, C++, and Fortran itself can be productive.
+    \item None of C, C++, and Fortran alone can be productive.
     \item Software structure needs to be organized to accommodate the computing
     models.
   \end{itemize}
@@ -474,8 +478,7 @@ Example: Solving Conservation Laws
     \item Challenge 1: HPC by routinely using 1,000+ cores and GPGPU computing.
     \item Challenge 2: I/O and post-processing large data; the bottleneck is
     the laborious work flow for post-processing the results.
-    \item Challenge 3: Code reuse for long life cycle: Extend the technologies
-    for various applications.
+    \item Challenge 3: Code reuse for long life cycle.
   \end{itemize}
   \item Python can address the challenges.
   \begin{itemize} \large
@@ -504,7 +507,7 @@ Conclusions
   software-engineering practices.
   \item Python combined with C or CUDA: A productive approach to the best
   practice of HPC.
-  \item Download the slides:
+  \item Download the source files of the slides:
   {\small\url{https://bitbucket.org/yungyuc/talk/src/tip/20110919_pysci/}}
 \end{itemize}
 \end{frame}
