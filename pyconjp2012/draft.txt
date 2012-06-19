@@ -1,0 +1,42 @@
+Short Biography
+===============
+
+Yung-Yu is a numerical analyst, a high-performance computing (HPC) application developer, and a Python programmer.  He is currently working on SOLVCON, a software framework designed for solving conservation laws with parallel computing.
+
+Futuristic Code for Science In Python
+=====================================
+
+Abstract
+++++++++
+
+Python is favored by scientists and engineers for the encouraged conciseness, abundant software packages, and high-performance enabled by interfacing to low-level code.  In this talk, a general setting of using Python as a platform for scientific/technical computing will be discussed.  The speaker will talk about fundamental toolkits and the convenient multi-language implementation enabled by Python.
+
+Outline
++++++++
+
+Since this century, scientists and engineers started to exploit light-weight, dynamically-typed programming languages like Python for serious computational tasks.  These new tools have long been used to power web and IT applications, and are going to boost the productivity of scientific/technical computing.
+
+The versatility and permissive licensing of Python make it an attractive platform to build a total solution upon.  In general, the efforts of making scientific software are two-fold: (i) Implementing the core numerical algorithms and (ii) organizing supportive functionalities that warp around the calculated data sets to deliver comprehensible results.  As long as a system can be designed to segregate computation-intensive tasks into high-performance numerical cores, Python can be used in other portion for supportive functionalities, e.g., I/O, parameter determination, pre-processing, and post-processing.  The supportive functionalities can be implemented by using Python or libraries with Python interface.  Everything can be glued together in harmony.
+
+In addition to the extensive libraries available in the Python world, production tools for code building, version control, documentation, visualization, automation, and system administration, etc., are abundant.  Applications of some of these tools to scientific/technical computing will be explained in the talk.  All these software tools together form a fully-fledged eco-system for scientific/technical computing, which is quite different from what scientists and engineers were used to.
+
+The talk will be organized on: (i) The need for a more productive software stack for solving scientific/engineering problems, (ii) established toolkits in Python, and (iii) introduction to interfacing low-level code from Python.
+
+Implement High-Performance PDE Solvers for First-Principle Simulations by Using Python
+======================================================================================
+
+Abstract
+++++++++
+
+Aided by its powerful gluing capability, Python can be used to build simulation software that demands high performance.  As performance hotspots being replaced by C, the software can be organized by using Python for a clear structure.  The resulting software provides high flexibility along with high performance.  In this talk, SOLVCON, a Python-based software framework for solving conservation laws, is used to demonstrate the approach.
+
+Outline
++++++++
+
+I would like to report the application of Python to develop first-principle simulators based on solving conservation laws, which are formulated as linear or non-linear, hyperbolic partial differential equations (PDEs), and the lessons learned in the emerging efforts.  The specific category of applications calls for highly-optimized and massively-parallelized code.  SOLVCON (http://solvcon.net/), a project that the speaker is working on, will be used as an example in this talk.
+
+By using Python, we can quickly make a prototype, which takes parallelism into account, to learn how the system should look like in an early stage.  Performance hotspot needs to be regularly checked in the course of development.  Low-level languages must be used to implement the hotspot to deliver the performance in demand.  A hybrid architecture that uses Python and a low-level language like C is the key.  The fundamental two-loop structure in hyperbolic PDE solvers is exploited to organize the software.
+
+The hybrid approach paves the road to a new style of developing PDE solvers.  First-principle simulators can be built with fewer resources, provide a clearer structure, and make the system more flexible.  The high-level layers in the resulted software can host various supportive functionalities, including I/O, pre-processing, and post-processing.  The layered structure can be used to easily implement advanced technologies such as GPGPU computing and in situ visualization.
+
+The layered structure facilitate collaboration of larger teams and potentially better optimization of the code.  The speaker also solicits collaboration on SOLVCON from people who are similar interests.
