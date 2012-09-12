@@ -1,0 +1,79 @@
+import sys
+Import('env', 'LineCounter')
+
+PROJNAME = 'solvcon'
+DEFNAMES = ['pde']
+DOCNAMES = DEFNAMES + []
+EPSDIR = '%s_eps' % PROJNAME
+TEXDEP = []
+if GetOption('count'):
+    counter = LineCounter('.py', '.f90', '.inc', '.c', '.h', 'cu')
+    for path in (PROJNAME,):
+        counter(path)
+    sys.stdout.write(str(counter)+'\n')
+    sys.exit(0)
+# figures.
+allfigs = list()
+## schematic LaTeX figures.
+for dname in [
+    'schematic', 'result_cfd', 'result_vg', 'result_perf',
+]:
+    allfigs.extend(env.Diaexport(Glob('%s/*.dia'%dname),
+        OUTDIR=EPSDIR, EXT='.eps'))
+    allfigs.extend(env.Imconvert(Glob('%s/*.jpg'%dname),
+        OUTDIR=EPSDIR, EXT='.eps', DPI=96))
+    allfigs.extend(env.Imconvert(Glob('%s/*.png'%dname),
+        OUTDIR=EPSDIR, EXT='.eps', DPI=96))
+    pstricks = env.Pstricks(Glob('%s/*.tex'%dname), OUTDIR=EPSDIR)
+    allfigs.extend(pstricks)
+    allfigs.extend(env.Imconvert(pstricks,
+        OUTDIR=EPSDIR, EXT='.png', DPI=300))
+## result figures.
+for dname in [
+    'result_plt',
+]:
+    allfigs.extend(env.Imconvert(Glob('%s/*.png'%dname),
+        OUTDIR=EPSDIR, EXT='.eps', DPI=96, FORCE_CONVERT=True,
+    ))
+
+# papers.
+dvis = dict()
+pdfs = dict()
+defdvis = dict()
+defpdfs = dict()
+for docname in DOCNAMES:
+    fn = '%s_%s' % (PROJNAME, docname)
+    dvi = env.DVI('%s.tex'%fn)
+    bib = env.CleanBib('%s.bib'%fn, '%s_raw.bib'%PROJNAME)
+    env.Depends(dvi, TEXDEP+allfigs+[bib])
+    ps = env.PostScript(dvi)
+    pdf = env.PSPDF(ps)
+    dvis[fn] = dvi
+    pdfs[fn] = pdf
+    if docname in DEFNAMES:
+        defdvis[fn] = dvi
+        defpdfs[fn] = pdf
+    env.Alias('%sdvi'%fn, dvi)
+    env.Alias('%spdf'%fn, pdf)
+
+# pack.
+#topack = ['README.rst']
+topack = []
+for docname in DOCNAMES:
+    topack.extend([
+        '%s_%s.tex'%(PROJNAME, docname),
+        '%s_%s.bib'%(PROJNAME, docname),
+    ])
+topack.extend(TEXDEP)
+topack.extend([pdfs[key] for key in pdfs])
+topack.extend(allfigs)
+pack = env.PackZip('%s.zip'%PROJNAME, topack)
+
+# target control.
+env.Alias('pack', pack)
+dvi = env.Alias('dvi', [dvis[key] for key in defdvis])
+pdf = env.Alias('pdf', [pdfs[key] for key in defpdfs])
+#env.Default(dvi)
+env.Default(pdf)
+
+# vim: set ft=python ff=unix:
