@@ -966,6 +966,36 @@ Use Anchor for Initial Condition
 \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]{
+%
+Setup the Simulation
+%
+}
+\begin{itemize} \small
+  \item A \texttt{Case} object is created for the simulation:
+  \begin{Verbatim}[frame=single,numbers=left,fontsize=\scriptsize]
+  def tube_base(...):
+      ...
+      # set up case.
+      basedir = os.path.abspath(os.path.join(os.getcwd(), 'result'))
+      cse = gasdyn.GasdynCase(basedir=basedir, rootdir=env.projdir,
+          basefn=casename, mesher=mesher, bcmap=bcmap, **kw)
+      # informative.
+      cse.runhooks.append(hook.BlockInfoHook)
+      ...
+      # initializer.
+      ...
+      cse.runhooks.append(DiaphragmIAnchor,
+          gamma=gamma, rho1=rho1, p1=p1, rho2=rho2, p2=p2)
+      # post processing.
+      ...
+      cse.runhooks.append(gasdyn.GasdynOAnchor, rsteps=ssteps)
+      ...
+      return cse
+  \end{Verbatim}
+\end{itemize}
+\end{frame}
+
 \section{
 %%%
 Conclusions
