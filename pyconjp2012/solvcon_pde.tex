@@ -75,6 +75,7 @@ Whom I Am and What's This About
     array-oriented programming.
     \item Implemented in Python and accelerated by C and other low-level tools.
   \end{itemize}
+  \item Slides: \url{http://j.mp/yyc_pyconjp2012}
 \end{itemize}
 \end{frame}
 
@@ -623,7 +624,8 @@ Solver Kernel for Spatial Loops
 \begin{itemize}
   \item A solver kernel is a Python class.
   \item The base class implements utility methods for \alert{spatial loops}.
-  \item The concrete solver implements real algorithms.
+  \item The concrete solver implements real algorithms, in \alert{C}, or other
+  fast languages.
   \item The algorithms directly work with the mesh look-up tables.
 \end{itemize}
 \end{column}
@@ -1023,13 +1025,27 @@ Conclusions
 %
 }
 \begin{itemize}
-  \item For computational scientists, Python is the way to go.
-  \begin{itemize}
-    \item I've done all the presented results by myself.
-    \item It's very \alert{productive}.
+  \item We've used Python to construct a high-performance system for solving
+  conservation laws or PDEs.
+  \begin{itemize} \normalsize
+    \item It's multi-physics: Fluid mechanics and solid mechanics (and
+    electromagnetics in the future).
+    \item It has a clear architecture.
+    \item Parallel computing is made easy.
   \end{itemize}
-  \item Download the source files of the slides: \url{http://j.mp/P06kl9}
+  \item It's very \alert{productive}.
+  \item And ...
 \end{itemize}
+\end{frame}
+
+\begin{frame}{
+%
+Python Rocks
+%
+}
+\begin{center} \Huge
+  Yes, it is!
+\end{center}
 \end{frame}
 
 \end{document}
