@@ -2,7 +2,7 @@ import sys
 Import('env', 'LineCounter')
 
 PROJNAME = 'solvcon'
-DEFNAMES = ['pde']
+DEFNAMES = ['pde', 'pytw']
 DOCNAMES = DEFNAMES + []
 EPSDIR = '%s_eps' % PROJNAME
 TEXDEP = []
