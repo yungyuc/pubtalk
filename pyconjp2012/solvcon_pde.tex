@@ -59,45 +59,21 @@ Outline
 
 \begin{frame}{
 %
-Whom I Am and What's This About
+It's about SOLVCON
 %
 }
 \begin{itemize}
-  \item I am a numerical analyst, a computational scientist, a Python programmer.
+  \item A solver constructor.
   \begin{itemize}
-    \item I am going to talk about \alert{SOLVCON}.
-  \end{itemize}
-  \item SOLVCON: Constructor of conservation-law \\ solvers.
-  \begin{itemize}
-    \item Perform first-principle simulations that are governed by conservation
-    laws.
+    \item Perform first-principle simulations for physical processes governed
+    by partial differential equations (PDEs).
+    \item I focus on conservation laws at the time being.
+    \item Written in \alert{Python} and with the performance hot-spot
+    accelerated by C (or CUDA).
     \item Address \alert{high-performance computing (HPC)} by mesh-based,
     array-oriented programming.
-    \item Implemented in Python and accelerated by C and other low-level tools.
   \end{itemize}
   \item Slides: \url{http://j.mp/yyc_pyconjp2012}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{
-%
-What Do I Want to Do with Python
-%
-}
-\begin{itemize}
-  \item Writing (fully-fledged) first-principle solvers is time-consuming.
-  \begin{itemize}
-    \item And it doesn't always work.  Sigh.
-  \end{itemize}
-  \item Can I use Python (in SOLVCON) to ease the pain?
-  \begin{itemize}
-    \item I am not along: Check \href{http://www.fenicsproject.org/}{FEniCS}
-    and \href{http://www.ctcms.nist.gov/fipy/}{FiPy}.
-  \end{itemize}
-  \item \alert{HPC} is a primary concern of SOLVCON.
-  \begin{itemize}
-    \item Hundreds, thousands, and hopefully hundreds of thousands of nodes.
-  \end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -181,18 +157,12 @@ First-Order Hyperbolic PDEs
 \begin{itemize}
   \item The fore-mentioned problems share a common trait: Demanding
   time-accurate solutions of conservation laws.
-  \begin{itemize}
-    \item These conservation laws can be cast into a system of full-coupled,
-    first-order, linear or nonlinear, hyperbolic partial differential
-    equations (PDEs).
-    \item The nonlinearity adds a lot of $\mathcal{FUN}$.
-  \end{itemize}
   \item So this is what I want to solve:
   {\footnotesize \begin{align}
    &\frac{\partial u_m}{\partial t}
       + \sum_{\mu=1}^3\frac{\partial f^{(\mu)}_m(\bvec{u})}{\partial x_{\mu}}
-      = s_m(\bvec{u})
-    \Rightarrow \boxed{\begin{gathered}
+      = s_m(\bvec{u}) \notag \\
+    \Rightarrow \quad &\boxed{\begin{gathered}
       \oint_{S(V)}\bvec{h}_m(\bvec{u})\cdot d\bvec{a}
       = \int_{V}s_m(\bvec{u})dv
     \end{gathered}} \label{e:conserv} \\
@@ -221,8 +191,8 @@ Coding for first-principle simulators is difficult.  Why?
       = s_m(\bvec{u}) \tag{\ref{e:conserv}}
   \end{align}}
   \item Various approaches to meshing and the associated data structures.
-  \item Data management and result analysis.
   \item Parallel programming for HPC.
+  \item Data management and result analysis.
 \end{enumerate}
 \end{frame}
 
@@ -247,19 +217,18 @@ Open-Source Research Codes?
 %
 }
 \begin{itemize}
-  \item Plenty of research codes are open-source, although the use of the
-  source code can be limited by the license.
-  \begin{itemize}
-    \item As the name suggests, many research codes lack the modern structure
-    that allows reuse.
-    \item 10 incompatible versions of a code in a research group?  Nobody likes
-    it, but it's quite often.
-  \end{itemize}
   \item Good codes like FEniCS and FiPy didn't focus on time-accurate solution
   of conservation laws with HPC.
   \begin{itemize}
     \item FEniCS is based on finite-element method (FEM).
     \item FiPy is based on projection method.
+  \end{itemize}
+  \item Plenty of research codes are open-source, but
+  \begin{itemize}
+    \item As the name suggests, many research codes lack the modern structure
+    that allows reuse.
+    \item 10 incompatible versions of a code in a research group?  Nobody likes
+    it, but it's quite often.
   \end{itemize}
 \end{itemize}
 \end{frame}
@@ -275,7 +244,6 @@ And I Learned the CESE Method
   Chang at NASA Glenn.
   \begin{itemize}
     \item Directly solves generic hyperbolic PDEs (Eq.~\eqref{e:conserv}).
-    \item Explicit time-marching for time-accurate solutions.
   \end{itemize}
   \item Enable pluggable multi-physics in SOLVCON.
   \begin{itemize}
@@ -310,40 +278,15 @@ Scope of SOLVCON
     three-dimensional space.
     \item Message-passing is built into the framework for parallel computing.
   \end{itemize}
-  \item A PDE-solving toolkit supporting parallel computing that can be
-  embedded into your application for delivering analyzed results.
+  \item A PDE-solving toolkit that can be embedded into other applications.
 \end{itemize}
 \end{frame}
 
 \subsection{
 %%
-Basics of SOLVCON
+Applications of SOLVCON
 %%
 }
-
-\begin{frame}{
-%
-Introduce SOLVCON
-%
-}
-\begin{itemize}
-  \item Features:
-  \begin{itemize}
-    \item Pluggable multi-physics.
-    \item Unstructured meshes for modeling complex geometry.
-    \item Hybrid parallel computing.
-    \item Ready-to-use I/O formats.
-    \item Parallel I/O and in situ visualization.
-    \item Automated work flow.
-  \end{itemize}
-  \item Architecture:
-  \begin{itemize}
-    \item Mesh-based programming for array-oriented computing.
-    \item Two-loop structure.
-    \item Inversion of control based on the mesh and two-loop.
-  \end{itemize}
-\end{itemize}
-\end{frame}
 
 \begin{frame}{
 %
@@ -576,6 +519,7 @@ Look-Up Tables for Meshes
   \end{itemize}
   \item Tables to connect all cells:
   \begin{itemize}
+    \item Global index of nodes (\texttt{ndcrd}).
     \item Nodes in each cell (\texttt{clnds}).
     \item Faces in each cell (\texttt{clfcs}).
     \item Nodes in each face (\texttt{fcnds}).
@@ -624,9 +568,9 @@ Solver Kernel for Spatial Loops
 \begin{itemize}
   \item A solver kernel is a Python class.
   \item The base class implements utility methods for \alert{spatial loops}.
+  \item The algorithms directly work with the mesh look-up tables.
   \item The concrete solver implements real algorithms, in \alert{C}, or other
   fast languages.
-  \item The algorithms directly work with the mesh look-up tables.
 \end{itemize}
 \end{column}
 \begin{column}{.25\textwidth} \centering
@@ -703,28 +647,28 @@ Two Types of Parallel Computing
 %
 }
 \begin{minipage}[c]{\textwidth}\centering \footnotesize
-\parbox{0.3\textwidth}{\centering
-\includegraphics[width=0.3\textwidth]{mem_distributed.eps} \\ \footnotesize
-distributed (cluster)}
-+ 
 \parbox{0.3\textwidth}{\centering 
 \includegraphics[width=0.3\textwidth]{mem_shared.eps} \\ \scriptsize shared
 (multi-/many-core)}
++ 
+\parbox{0.3\textwidth}{\centering
+\includegraphics[width=0.3\textwidth]{mem_distributed.eps} \\ \footnotesize
+distributed (cluster)}
 = 
 \parbox{0.3\textwidth}{\centering
 \includegraphics[width=0.3\textwidth]{mem_hybrid.eps} \\ \footnotesize hybrid}
 \end{minipage}
 \begin{itemize}
-  \item Simultaneously use distributed-memory and shared-memory parallel
-  computing (DMPC \& SMPC, respectively).
+  \item Simultaneously use shared-memory and distributed-memory parallel
+  computing (DMPC \& DMPC, respectively).
   \begin{itemize}
     \item Main difference: \alert{Addressing space}.
   \end{itemize}
   \item Inter-process communication is needed.
   \begin{itemize}
-    \item \alert{MapReduce is unsuitable}.
     \item DMPC is much more complex than SMPC.
     \item \alert{DMPC determines the scalability}.
+    \item \alert{MapReduce is unsuitable}.
   \end{itemize}
 \end{itemize}
 \end{frame}
@@ -1008,6 +952,16 @@ The Results
 %
 }
 \begin{itemize} 
+  \item Run the simulation case:
+  \begin{Verbatim}[frame=single,numbers=left,fontsize=\scriptsize,commandchars=\\\{\}]
+  if __name__ == '__main__':
+      cse = tube_base('tube_20', use_incenter=True,
+          gamma=1.4, rho1=1.0, p1=1.0, rho2=0.125, p2=0.25,
+          time_increment=1.8e-3, steps_run=400, ssteps=40, psteps=1)
+      cse.\alert{init()}
+      cse.run()
+      cse.cleanup()
+  \end{Verbatim}
   \item Let's launch \href{http://paraview.org/}{ParaView} to visualize and
   render the calculated results.
 \end{itemize}
@@ -1060,6 +1014,14 @@ Python Rocks
 }
 \begin{center} \Huge
   Yes, it is!
+\end{center}
+\end{frame}
+
+\section*{}
+
+\begin{frame}{}
+\begin{center} \Huge
+  Thank You
 \end{center}
 \end{frame}
 
