@@ -1,0 +1,573 @@
+\documentclass[dvips,xcolor=pst,14pt]{beamer}
+%\documentclass[dvips,handout,xcolor=pst]{beamer}
+%\documentclass[letterpaper]{article}
+%\usepackage{beamerarticle}
+%\newcommand{\newblock}{} % a hack for bibtex.
+\usepackage{color}
+\usepackage{pstricks}
+%\usepackage{hyperref}
+%\usepackage[authoryear]{natbib}
+\usepackage{graphicx}
+\usepackage{multimedia}
+\usepackage{pgfpages}
+\usepackage{arydshln}
+\usepackage{commath}
+\usepackage{vector}
+%\usepackage{cancel}
+\usepackage{ulem}
+\usepackage{listings}
+%\usepackage{times}
+
+\graphicspath{{pysci_eps/}}
+
+\newcommand{\defeq}{\ensuremath{\buildrel {\text{def}}\over{=}}} 
+
+\usetheme{CambridgeUS}
+%\usefonttheme[stillsansseriftext]{serif}
+\usefonttheme[onlymath]{serif}
+
+%\setbeameroption{show notes}
+%\setbeameroption{show only notes}
+%\pgfpagesuselayout{2 on 1}[letterpaper,border shrink=0.2in]
+
+\lstset{basicstyle=\footnotesize\ttfamily,%
+keywordstyle=\color{blue},%
+stringstyle=\color{magenta},%
+commentstyle=\color{green},%
+breaklines=true}
+%\lstset{framextopmargin=50pt,frame=bottomline}
+
+\title[Cython for HPC]{Introduction to Cython: Bridging Python to Compiled Code
+for High-Performance Computing}
+%
+\author[\href{http://solvcon.net/yyc/}{Yung-Yu Chen}]%
+{\href{http://solvcon.net/yyc/}{Yung-Yu Chen} \\ {\scriptsize
+\url{yyc@solvcon.net}}}
+%
+\institute[PyHUG]{Python Hsinchu User Group}
+%
+\date[2012/12/3]{December 3, 2012}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+% \begin{frame}{
+% %
+% Our Topics Today
+% %
+% }
+% \tableofcontents
+% \end{frame}
+
+\section{
+%%%
+Cython Is a Code Generator
+%%%
+}
+
+\subsection{
+%%
+Introduction
+%%
+}
+
+\begin{frame}{
+%
+What Is Cython?
+%
+}
+\begin{itemize}
+\item Cython generates C code from Python.
+\item The generated code contains API calls to CPython runtime (VM).
+\begin{itemize}
+  \item Can interface to both the existing \alert{C} and \alert{C++} code.
+\end{itemize}
+\item Popular use cases:
+\begin{itemize} \normalsize
+  \item Convert Python code into binary for protection (and a little bit
+  speed-up).
+  \item Highly-tuned, high-performance C code.
+  \item Glue Python with C.
+\end{itemize}
+\item \url{http://www.cython.org/}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Installation
+%
+}
+\begin{itemize}
+\item The easiest way is to use your OS' package manager, e.g., under
+Debian/Ubuntu:
+\begin{lstlisting}[language=bash]
+> apt-get install cython
+\end{lstlisting}
+\item Use setuptools (\verb+easy_install+):
+\begin{lstlisting}[language=bash]
+> easy_install --upgrade cython
+\end{lstlisting}
+\item I am focusing on the most recent version of Cython:
+\begin{lstlisting}[language=bash]
+> cython --version
+Cython version 0.17.2
+\end{lstlisting}
+\item If you don't want to mess up your system Python, virtualenv can help you:
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=bash]
+> virtualenv --system-site-package --setuptools cpython
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\subsection{
+%%
+Basic Usage
+%%
+}
+
+\begin{frame}[fragile]{
+%
+Build Your First Cython Module
+%
+}
+\begin{itemize}
+\item Let's say we have a Python file \verb+example1.py+:
+\lstinputlisting[basicstyle=\scriptsize\ttfamily,language=Python]{example1.py}
+\item It can be compiled by Cython (and gcc):
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=bash]
+> cp example1.py /tmp/example1c.py
+> cython /tmp/example1c.py -o /tmp/example1c.c
+> gcc `python-config --includes` -c /tmp/example1c.c -fPIC -o /tmp/example1c.o
+> gcc `python-config --libs` /tmp/example1c.o -shared -o example1c.so
+\end{lstlisting}
+\item The results are identical:
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=bash]
+> python -c 'import example1; example1.action()'
+> python -c 'import example1c; example1c.action()'
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Source Code Are Now Hidden
+%
+}
+\begin{itemize}
+\item Python code becomes binary for API calls:
+\begin{lstlisting}[language=bash]
+> file example1.py example1c.so 
+example1.py:  ASCII text
+example1c.so: ELF 64-bit LSB shared object, ...
+\end{lstlisting}
+\item But the runtime speed is not improved much:
+\begin{lstlisting}[language=bash]
+> python -m timeit -s 'from example1 import action' 'action()'
+10 loops, best of 3: 49 msec per loop
+> python -m timeit -s 'from example1c import action' 'action()'
+10 loops, best of 3: 42.6 msec per loop
+\end{lstlisting}
+\item It's still run on interpreter, so the speed-up (42.6 msec vs 49 msec)
+isn't impressive.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Cython is a Language
+%
+}
+\begin{itemize}
+\item Cython extends Python.  It is a \alert{superset} of Python.
+\begin{itemize}
+\item When compiling {\color{red}\verb+.py+} files, of course only Python
+syntax can be used.
+\end{itemize}
+\item If Cython-specific syntax is used, the source code can no longer be run
+by a vanilla Python VM.
+\begin{itemize}
+\item It should be saved as a {\color{red}\verb+.pyx+} file and compiled by
+Cython compiler to binary.
+\end{itemize}
+\item The Cython add-on helps to generate faster code and adapt to various
+libraries.
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+Use Cython for High-Performance Code
+%%%
+}
+
+\subsection{
+%%
+Type Information
+%%
+}
+
+\begin{frame}[fragile]{
+%
+Faster Code? Type Information
+%
+}
+\begin{itemize}
+\item Just prefix ``{\color{red}\verb+cdef int+}'' to our counter:
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=Python,escapechar=!]
+def action():
+    !\colorbox{red}{cdef int}! it = 0
+    while it < 1000000:
+        it += 1
+    print it
+\end{lstlisting}
+and compile
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=bash]
+> cython example1d.pyx -o /tmp/example1d.c
+> gcc `python-config --includes` -c /tmp/example1d.c -fPIC -o /tmp/example1d.o
+> gcc `python-config --libs` /tmp/example1d.o -shared -o example1d.so
+\end{lstlisting}
+\item Then 16 times faster! (3.01 msec vs 49 msec)
+\begin{lstlisting}[language=bash]
+> python -m timeit -s 'from example1d import action' 'action()'
+100 loops, best of 3: 3.01 msec per loop
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\subsection{
+%%
+NumPy and Array Indexing
+%%
+}
+
+\begin{frame}[fragile]{
+%
+Cython Supports NumPy
+%
+}
+\begin{itemize}
+\item You can use NumPy arrays ({\color{red}\verb+example2d.pyx+}):
+\lstinputlisting[basicstyle=\tiny\ttfamily,language=Python]{example2d.pyx}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Add Array Dimensions
+%
+}
+\begin{itemize}
+\item Let Cython use direct indexing ({\color{red}\verb+example2a.pyx+}):
+\begin{lstlisting}[basicstyle=\tiny\ttfamily,language=Python,escapechar=!]
+import numpy as np
+cimport numpy as cnp
+def action():
+    !\colorbox{red}{cdef cnp.ndarray[cnp.double\_t, ndim=2]}! arr0 = np.empty(
+        [1000,1000], dtype='float64')
+    arr0.fill(0)
+    !\colorbox{red}{cdef cnp.ndarray[cnp.double\_t, ndim=2]}! arr1 = np.empty(
+        [1000,1000], dtype='float64')
+    arr1.fill(1)
+    cdef int it = 1
+    cdef int jt
+    while it < 999:
+        jt = 1
+        while jt < 999:
+            arr0[it, jt] += arr1[it-1, jt-1]
+            arr0[it, jt] += arr1[it-1, jt  ]
+            arr0[it, jt] += arr1[it-1, jt+1]
+            arr0[it, jt] += arr1[it  , jt+1]
+            arr0[it, jt] += arr1[it+1, jt+1]
+            arr0[it, jt] += arr1[it+1, jt  ]
+            arr0[it, jt] += arr1[it+1, jt-1]
+            arr0[it, jt] += arr1[it  , jt-1]
+            jt += 1
+        it += 1
+    assert 7968032 == arr0.sum()
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Direct Indexing Is Way Faster
+%
+}
+\begin{itemize}
+\item Use NumPy API for indexing: 5.74 sec.
+\begin{lstlisting}[language=bash]
+> python -m timeit -s 'from example2d import action' 'action()'
+10 loops, best of 3: 5.74 sec per loop
+\end{lstlisting}
+\item Direct indexing: 139 msec. 
+\begin{lstlisting}[language=bash]
+> python -m timeit -s 'from example2a import action' 'action()'
+10 loops, best of 3: 139 msec per loop
+\end{lstlisting}
+\item Direct indexing makes the code run \alert{41} times faster.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Turn off Bound-Checking
+%
+}
+\begin{itemize}
+\item Get a little speed-up ({\color{red}\verb+example2b.pyx+}): 110 msec.
+\begin{lstlisting}[language=Python,escapechar=!]
+import numpy as np
+cimport numpy as cnp
+!\colorbox{red}{cimport cython}!
+!\colorbox{red}{@cython.boundscheck(False)}!
+def action():
+    cdef cnp.ndarray[cnp.double_t, ndim=2] arr0 = np.empty(
+        [1000,1000], dtype='float64')
+    arr0.fill(0)
+    cdef cnp.ndarray[cnp.double_t, ndim=2] arr1 = np.empty(
+        [1000,1000], dtype='float64')
+    arr1.fill(1)
+    ...
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+Bridge C and Python
+%%%
+}
+
+\begin{frame}[fragile]{
+%
+We Just Want to Call C
+%
+}
+\begin{itemize}
+\item Let's say we have a C function ({\color{red}\verb+example2.c+}):
+\lstinputlisting[language=C]{example2.c}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Cython Let You Call C
+%
+}
+\begin{itemize}
+\item {\color{red}\verb+example2c.pyx+}:
+\lstinputlisting[language=Python]{example2c.pyx}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Side Effect: Even Faster
+%
+}
+\begin{itemize}
+\item The C version is 51.4 msec, the fastest.
+\begin{lstlisting}[language=bash]
+> python -m timeit -s 'from example2c import action' 'action()'
+10 loops, best of 3: 51.4 msec per loop
+\end{lstlisting}
+\item Compare to the original version, 5.74 sec / 51.4 msec = 106 times faster.
+\item Compare to the pure-Cython version, 110 msec / 51.4 msec = 2 times
+faster. 
+\item \alert{C is the king}.
+\begin{itemize}
+  \item The rule of thumb: Python is \alert{two orders of magnitude slower}
+  than C.
+  \item But after we replace the Python hotspot with C, it's OK.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Useful Syntax for Wrapping
+%
+}
+\begin{itemize}
+\item \verb+cdef extern from "header.h":+
+\begin{itemize}
+  \item Allows Cython to check the declaration from outside headers.
+\end{itemize}
+\item \verb+cdef public:+
+\begin{itemize}
+  \item Allows Cython to generates C header files for inclusion in other C
+  code.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+Distribution with Cython
+%%%
+}
+
+\subsection{
+%%
+pyximport
+%%
+}
+
+\begin{frame}[fragile]{
+%
+Build Cython Code on the Fly
+%
+}
+\begin{itemize}
+\item For simple code, Cython can compile it on the fly by using
+``{\color{red}\verb+pyximport+}'':
+\begin{lstlisting}[language=Python]
+import pyximport
+pyximport.install()
+\end{lstlisting}
+\item Then standard \verb+import+ gets the \verb+pyx+ file compiled:
+\begin{lstlisting}[language=Python]
+import example2b
+\end{lstlisting}
+\item After that the code is ready for use:
+\begin{lstlisting}[language=Python]
+example2b.action()
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\subsection{
+%%
+Distutils with Cython
+%%
+}
+
+\begin{frame}[fragile]{
+%
+Use Cython's Distutils Helper
+%
+}
+\begin{itemize}
+\item Prepare a \verb+setup.py+ file:
+\lstinputlisting[language=Python]{setup.py}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Build and Run the Extension
+%
+}
+\begin{itemize}
+\item Run the \verb+setup.py+:
+\begin{lstlisting}[language=bash]
+> python setup.py build_ext --inplace
+\end{lstlisting}
+\item We then can use the built module:
+\begin{lstlisting}[language=bash]
+> python -c 'from example2s import action; action()'
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\subsection{
+%%
+Standard Distutils
+%%
+}
+
+\begin{frame}[fragile]{
+%
+Distribute Compiled C Files
+%
+}
+\begin{itemize}
+\item Prepare the C file to be distributed:
+\begin{lstlisting}[language=bash]
+> cython example2p.pyx -o example2p.c
+\end{lstlisting}
+\item Prepare another \verb+setup2.py+ file:
+\lstinputlisting[language=Python]{setup2.py}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Build and Run the Extension with Cython
+%
+}
+\begin{itemize}
+\item Run the \verb+setup2.py+:
+\begin{lstlisting}[language=bash]
+> python setup2.py build_ext --inplace
+\end{lstlisting}
+\alert{But no Cython is needed at building.}
+\item We then can use the built module:
+\begin{lstlisting}[language=bash]
+> python -c 'from example2p import action; action()'
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\section*{
+%%%
+Conclusions
+%%%
+}
+
+\begin{frame}{
+%
+What Cython Is Good At
+%
+}
+\begin{itemize}
+\item Hide the Python source code by turning it into C.
+\begin{itemize}
+  \item Even byte code disappears.  Only binary remains.
+\end{itemize}
+\item By supplying type information, provide an order of magnitude of speed-up.
+\item When working with NumPy arrays, Cython supports direct indexing that
+boosts the performance for tens of times.
+\item Wrap self-written or 3rd-party libraries with great ease.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{
+%
+What You Shouldn't Do with Cython
+%
+}
+\begin{itemize}
+\item Write a complex class hierarchy and expect it to run very fast.
+\begin{itemize}
+  \item If you need high-performance code based on a complex class hierarchy,
+  you should use C++ and wrap it around with Boost.Python, Cython, or something
+  else.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{
+%
+Extended Resources
+%
+}
+\begin{itemize}
+\item \href{http://www.cython.org/}{Cython}
+\item \href{http://www.boost.org/doc/libs/1_52_0/libs/python/doc/}%
+{Boost.Python}
+\item \href{http://www.swig.org/}{SWIG}
+\item \href{http://docs.python.org/2/distutils/index.html}%
+{Distributing Python Modules}
+\item \href{http://docs.python.org/2/c-api/index.html}%
+{Python C/API Reference Manual}
+\end{itemize}
+\end{frame}
+
+\end{document}
+
+% vim: set spell:

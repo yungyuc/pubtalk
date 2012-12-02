@@ -1,0 +1,46 @@
+import os
+
+AddOption('--count', dest='count',
+    action='store_true', default=False,
+    help='Count line of sources.')
+
+class LineCounter(object):
+    """
+    Walk given directory to count lines in source files.
+    """
+
+    def __init__(self, *args):
+        self.exts = args
+        self.counter = dict()
+
+    def __call__(self, path):
+        import os
+        from os.path import join, splitext
+        for root, dirs, files in os.walk(path):
+            for fname in files:
+                mainfn, extfn = splitext(fname)
+                if extfn not in self.exts:
+                    continue
+                self.counter[extfn] = self.counter.get(extfn, 0) + len(
+                    open(join(root, fname)).readlines())
+
+    def __str__(self):
+        keylenmax = max([len(key) for key in self.counter])
+        tmpl = "%%-%ds = %%d" % keylenmax
+        all = 0
+        ret = list()
+        for extfn in sorted(self.counter.keys()):
+            ret.append(tmpl % (extfn, self.counter[extfn]))
+            all += self.counter[extfn]
+        ret.append(tmpl % ('All', all))
+        return '\n'.join(ret)
+
+env = Environment(ENV=os.environ, LATEXFLAGS='--src-specials',
+    TOOLS=[
+        'default',
+        'paper',
+    ],
+)
+Export('env', 'LineCounter')
+SConscript(['SConscript'])
+# vim: set ft=python ff=unix:

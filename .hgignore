@@ -39,3 +39,6 @@ solvcon.log
 *.zip
 *_eps/
 tmp/
+# 20121203_cython
+20121203_cython/example2b.c
+20121203_cython/example2p.c
