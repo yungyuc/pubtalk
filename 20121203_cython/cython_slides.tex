@@ -87,7 +87,7 @@ What Is Cython?
 \end{itemize}
 \item Popular use cases:
 \begin{itemize} \normalsize
-  \item Convert Python code into binary for protection (and a little bit
+  \item Convert Python code into binary for protection (only a little bit
   speed-up).
   \item Highly-tuned, high-performance C code.
   \item Glue Python with C.
@@ -135,7 +135,7 @@ Build Your First Cython Module
 %
 }
 \begin{itemize}
-\item Let's say we have a Python file \verb+example1.py+:
+\item Let's say we have a Python file {\color{red}\verb+example1.py+}:
 \lstinputlisting[basicstyle=\scriptsize\ttfamily,language=Python]{example1.py}
 \item It can be compiled by Cython (and gcc):
 \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=bash]
@@ -158,13 +158,13 @@ Source Code Are Now Hidden
 %
 }
 \begin{itemize}
-\item Python code becomes binary for API calls:
+\item Python code becomes compiled API calls:
 \begin{lstlisting}[language=bash]
 > file example1.py example1c.so 
 example1.py:  ASCII text
 example1c.so: ELF 64-bit LSB shared object, ...
 \end{lstlisting}
-\item But the runtime speed is not improved much:
+\item But the runtime speed isn't improved much:
 \begin{lstlisting}[language=bash]
 > python -m timeit -s 'from example1 import action' 'action()'
 10 loops, best of 3: 49 msec per loop
@@ -395,7 +395,7 @@ Useful Syntax for Wrapping
 \begin{itemize}
 \item \verb+cdef extern from "header.h":+
 \begin{itemize}
-  \item Allows Cython to check the declaration from outside headers.
+  \item Allows Cython to check the declarations from outside headers.
 \end{itemize}
 \item \verb+cdef public:+
 \begin{itemize}
@@ -429,7 +429,8 @@ Build Cython Code on the Fly
 import pyximport
 pyximport.install()
 \end{lstlisting}
-\item Then standard \verb+import+ gets the \verb+pyx+ file compiled:
+\item Then standard \verb+import+ gets the {\color{red}\verb+pyx+} file
+compiled:
 \begin{lstlisting}[language=Python]
 import example2b
 \end{lstlisting}
