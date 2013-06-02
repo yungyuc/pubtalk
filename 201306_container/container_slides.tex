@@ -1,0 +1,576 @@
+\documentclass[dvips,xcolor=pst,14pt]{beamer}
+%\documentclass[dvips,handout,xcolor=pst]{beamer}
+%\documentclass[letterpaper]{article}
+%\usepackage{beamerarticle}
+%\newcommand{\newblock}{} % a hack for bibtex.
+\usepackage{color}
+\usepackage{pstricks}
+%\usepackage{hyperref}
+%\usepackage[authoryear]{natbib}
+\usepackage{graphicx}
+\usepackage{multimedia}
+\usepackage{pgfpages}
+\usepackage{arydshln}
+\usepackage{commath}
+\usepackage{vector}
+%\usepackage{cancel}
+\usepackage{ulem}
+\usepackage{listings}
+%\usepackage{times}
+
+\graphicspath{{pysci_eps/}}
+
+\newcommand{\defeq}{\ensuremath{\buildrel {\text{def}}\over{=}}} 
+
+\usetheme{CambridgeUS}
+%\usefonttheme[stillsansseriftext]{serif}
+\usefonttheme[onlymath]{serif}
+
+%\setbeameroption{show notes}
+%\setbeameroption{show only notes}
+%\pgfpagesuselayout{2 on 1}[letterpaper,border shrink=0.2in]
+
+\lstset{basicstyle=\footnotesize\ttfamily,%
+keywordstyle=\color{blue},%
+stringstyle=\color{magenta},%
+commentstyle=\color{red},%
+breaklines=true}
+%\lstset{framextopmargin=50pt,frame=bottomline}
+
+\title[Containers]{The Usefulness of Python: Containers}
+%
+\author[\href{http://solvcon.net/yyc/}{Yung-Yu Chen}]%
+{\href{http://solvcon.net/yyc/}{Yung-Yu Chen} \\ {\scriptsize
+\url{yyc@solvcon.net}}}
+%
+\institute[PyHUG]{Python Hsinchu User Group}
+%
+\date[2013/6/3]{June 3, 2013}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+% \begin{frame}{
+% %
+% Our Topics Today
+% %
+% }
+% \tableofcontents
+% \end{frame}
+
+\section{
+%%%
+Program for Productivity
+%%%
+}
+
+\subsection{
+%%
+Take List for Example
+%%
+}
+
+\begin{frame}[fragile]{
+%
+What's a Container
+%
+}
+\begin{itemize}
+\item OK, here's some C++ code for an \verb+int+ list:
+  \lstinputlisting[%
+    basicstyle=\scriptsize\ttfamily,numbers=left,language=C++]{list.cpp}
+\end{itemize}
+
+\begin{flushleft}\tiny Code is taken from
+\url{http://www.csci.csusb.edu/dick/samples/stl.html#Lists}.
+\end{flushleft}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+What Does It Take for a List?
+%
+}
+\begin{itemize}
+\item Many many things.
+\item A very simple (and primitive) implementation takes 157 lines of C code.
+\item The first 10 lines:
+  \lstinputlisting[%
+    basicstyle=\scriptsize\ttfamily,numbers=left,%
+    firstline=1,lastline=10,language=C]{list.c}
+\item And it's also a list for \verb+int+ only!
+\end{itemize}
+
+\begin{flushleft}\tiny Code is taken from
+\url{http://www.thegeekstuff.com/2012/08/c-linked-list-example/}.
+\end{flushleft}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Let's See a Python List
+%
+}
+\begin{itemize}
+\item 2 (or 1?) lines of code:
+  \lstinputlisting[%
+    basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]{list.py}
+  \begin{itemize}
+  \item This slide becomes a bit too blank.
+  \end{itemize}
+\item It's so good to have Python.
+\end{itemize}
+\end{frame}
+
+\subsection{
+%%
+Python Containers
+%%
+}
+
+\begin{frame}[fragile]{
+%
+What Are Python Containers?
+%
+}
+\begin{itemize}
+\item In fact there is no such a type called ``container'' in Python.
+  \begin{itemize}
+  \item It's just a common name to refer objects that can hold other objects.
+  \item Like \verb+list+, \verb+stack+, \verb+vector+, \verb+map+, etc., in
+  C++.
+  \item The dynamicity makes containers in Python more powerful than in C++.
+  \end{itemize}
+\item Three categories of Python containers:
+\begin{itemize}
+  \item \href{http://docs.python.org/2/library/stdtypes.html#sequence-types-str-unicode-list-tuple-bytearray-buffer-xrange}{%
+    Sequence types (\texttt{list}, \texttt{tuple}, etc.)}
+  \item \href{http://docs.python.org/2/library/stdtypes.html#set-types-set-frozenset}{%
+    Set types (\texttt{set} and \texttt{fronzeset}).}
+  \item \href{http://docs.python.org/2/library/stdtypes.html#mapping-types-dict}{%
+    Mapping types (\texttt{dict}).}
+\end{itemize}
+\item They fit your brains.
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+Sequence
+%%%
+}
+
+\subsection{
+%%
+List
+%%
+}
+
+\begin{frame}[fragile]{
+%
+\texttt{list}: A General Sequence Type
+%
+}
+\begin{itemize}
+\item \texttt{str} might be the most used sequence type, but it is for
+character strings only.
+  \begin{itemize}
+  \item \texttt{list} can hold anything.
+  \end{itemize}
+\item \texttt{[]} or \texttt{list()} constructs a list for you:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> la = []
+>>> lb = list()
+>>> print(la, lb)
+([], [])
+  \end{lstlisting}
+\item Some built-ins return a list:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> a = range(10)
+>>> print(type(a), a)
+(<type 'list'>, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Sort a \texttt{list}
+%
+}
+\begin{itemize}
+\item Simple sort:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> a = [87, 82, 38, 56, 84]
+>>> b = sorted(a) # b is a new list.
+>>> print(b)
+[38, 56, 82, 84, 87]
+>>> a.sort() # this method does in-place sort.
+>>> print(a)
+[38, 56, 82, 84, 87]
+  \end{lstlisting}
+\item Not-so-simple sort:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> a = [('a', 0), ('b', 2), ('c', 1)]
+>>> print(sorted(a)) # sorted with the first value.
+[('a', 0), ('b', 2), ('c', 1)]
+>>> print(sorted(a, key=lambda k: k[1])) # use the second.
+[('a', 0), ('c', 1), ('b', 2)]
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+List Comprehension
+%
+}
+\begin{itemize}
+\item List comprehension is a very useful technique to construct a list from
+another iterable:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> values = [10.0, 20.0, 30.0, 15.0]
+>>> print([it/10 for it in values])
+[1.0, 2.0, 3.0, 1.5]
+  \end{lstlisting}
+\item List comprehension can even be nested:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> values = [[10.0, 1.0], [20.0, 2.0], [30.0, 3.0], [15.0, 1.5]]
+>>> print([jt for it in values for jt in it])
+[10.0, 1.0, 20.0, 2.0, 30.0, 3.0, 15.0, 1.5]
+  \end{lstlisting}
+  But usually nested list comprehension is not easy to understand, and not a
+  good idea.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Recipe: Calculation
+%
+}
+\begin{itemize}
+\item Built-in calculation functions for iterables:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> values = [10.0, 20.0, 30.0, 15.0]
+>>> min(values), max(it for it in values)
+(10.0, 30.0)
+>>> sum(values)
+75.0
+>>> sum(values)/len(values)
+18.75
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\subsection{
+%%
+Tuple
+%%
+}
+
+\begin{frame}[fragile]{
+%
+\texttt{tuple}: Immutable Sequence
+%
+}
+\begin{itemize}
+\item A \texttt{tuple} can also hold anything, but cannot be changed once
+constructed.
+\item It can be created with \texttt{()} or \texttt{tuple()}:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> ta = (1)
+>>> print(type(ta), ta)
+(<type 'int'>, 1)
+>>> ta = (1,)
+>>> print(type(ta), ta)
+(<type 'tuple'>, (1,))
+>>> ta[0] = 2
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+Set
+%%%
+}
+
+\begin{frame}[fragile]{
+%
+\texttt{set}: Distinct Elements
+%
+}
+\begin{itemize}
+\item A \texttt{set} holds any hashable element, and its elements are distinct:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> sa = {1, 2, 3}
+>>> print(type(sa), sa)
+(<type 'set'>, set([1, 2, 3]))
+>>> print({1, 2, 2, 3}) # no duplication is possible.
+set([1, 2, 3])
+>>> len({1, 2, 2, 3})
+3
+  \end{lstlisting}
+\item It's unordered:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> [it for it in {3, 2, 1}]
+[1, 2, 3]
+>>> [it for it in {3, 'q', 1}]
+['q', 1, 3]
+>>> 'q' < 1
+False
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Add/Remove Elements
+%
+}
+\begin{itemize}
+\item Add elements after construction of the set:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> sa = {1, 2, 3}
+>>> sa.add(1)
+>>> sa
+set([1, 2, 3])
+>>> sa.add(10)
+>>> sa
+set([1, 2, 3, 10])
+  \end{lstlisting}
+\item Remove elements:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> sa = {1, 2, 3, 10}
+>>> sa.remove(5) # err with non-existing element
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 5
+>>> sa.discard(2) # really discard an element
+>>> sa
+set([1, 3, 10])
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Set Operations
+%
+}
+\begin{itemize}
+\item Subset or superset:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> {1, 2, 3} < {2, 3, 4, 5} # subset
+False
+>>> {2, 3} < {2, 3, 4, 5}
+True
+>>> {2, 3, 4, 5} > {2, 3} # superset
+True
+  \end{lstlisting}
+\item Union and intersection:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> {1, 2, 3} | {2, 3, 4, 5} # union
+set([1, 2, 3, 4, 5])
+>>> {1, 2, 3} & {2, 3, 4, 5} # intersection
+set([2, 3])
+>>> {1, 2, 3} - {2, 3, 4, 5} # difference
+set([1])
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Recipe: Count Unique Elements
+%
+}
+\begin{itemize}
+\item A set can be used with a sequence to quickly calculate unique elements:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> data = [1, 2.0, 0, 'b', 1, 2.0, 3.2]
+>>> sorted(set(data))
+[0, 1, 2.0, 3.2, 'b']
+  \end{lstlisting}
+\item But there's a problem: It doesn't support unhashable objects:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> data = [dict(a=200), 1, 2.0, 0, 'b', 1, 2.0, 3.2]
+>>> set(data)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: unhashable type: 'dict'
+  \end{lstlisting}
+  Read the Python Cookbook for a solution :-)
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+Mapping
+%%%
+}
+
+\begin{frame}[fragile]{
+%
+\texttt{dict}: The Mapping Type
+%
+}
+\begin{itemize}
+\item A \texttt{dict} stores any number of key-value pairs.  It is the most used
+Python container since it's everywhere for Python namespace.
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> {'a': 10, 'b': 20} == dict(a=10, b=20)
+True
+>>> da = {1: 10, 2: 20} # any hashable can be a key
+>>> da[1] + da[2]
+30
+>>> class SomeClass(object):
+...     pass
+... 
+>>> print(type(SomeClass().__dict__))
+<type 'dict'>
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Access Contents
+%
+}
+\begin{itemize}
+\item To test whether something is in a dictionary or not:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> da = {1: 10, 2: 20}
+>>> 3 in da
+False
+  \end{lstlisting}
+\item Access a key-value pair:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> da[3] # it fails for 3 is not in the dictionary
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 3
+>>> print(da[3] if 3 in da else 30) # works but wordy
+30
+>>> da.get(3, 30) # it's the way to go
+30
+>>> da # indeed we don't have 3 as a key
+{1: 10, 2: 20}
+>>> da.setdefault(3, 30) # how about this?
+30
+>>> da # we added 3 into the dictionary!
+{1: 10, 2: 20, 3: 30}
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Iterating a \texttt{dict}
+%
+}
+\begin{itemize}
+\item Iterating a \texttt{dict} automatically gives you its keys:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> da = {1: 10, 2: 20}
+>>> ','.join('%s'%key for key in da)
+'1,2'
+>>> ','.join('%d'%da[key] for key in da)
+'10,20'
+  \end{lstlisting}
+\item \texttt{items()} and \texttt{iteritems()} give you both key and value at
+once:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> da.items() # returns a list
+[(1, 10), (2, 20)]
+>>> da.iteritems() # returns an iterator
+<dictionary-itemiterator object at 0xa35050>
+>>> ','.join('%s:%s'%(key, value) for key, value in da.iteritems())
+'1:10,2:20'
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Dictionary Views
+%
+}
+\begin{itemize}
+\item A dictionary view changes with the dictionary:
+  \begin{lstlisting}[basicstyle=\scriptsize\ttfamily,numbers=left,language=Python]
+>>> da = {1: 10, 2: 20}
+>>> daiit = da.iteritems() # an iterator
+>>> daiit
+<dictionary-itemiterator object at 0xa350a8>
+>>> davit = da.viewitems() # a view object
+>>> davit
+dict_items([(1, 10), (2, 20)])
+>>> da[3] = 30 # change the dictionary
+>>> ','.join('%s:%s'%(key, value) for key, value in daiit)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 1, in <genexpr>
+RuntimeError: dictionary changed size during iteration
+>>> ','.join('%s:%s'%(key, value) for key, value in davit)
+'1:10,2:20,3:30'
+  \end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+\texttt{collections}
+%%%
+}
+
+\begin{frame}[fragile]{
+%
+Collections Abstract Base Classes
+%
+}
+\begin{itemize}
+\item OK, what I really wanted to talked about in this talk was the
+\href{http://docs.python.org/2/library/collections.html#collections-abstract-base-classes}{collections
+ABCs}.
+  \begin{itemize}
+  \item But it seemed impossible to prepare a talk about them in 3 hours.
+  \item Sorry.
+  \item I stop here.
+  \end{itemize}
+\item When you want to make your own containers (data structures), they are
+extremely handy.
+  \begin{itemize}
+  \item For example, an
+  \href{http://code.activestate.com/recipes/576694/}{OrderedSet} that uses
+  \href{http://docs.python.org/2/library/collections.html#collections.MutableSet}{\texttt{collections.MutableSet}}.
+  \end{itemize}
+\item Maybe next time.
+\end{itemize}
+\end{frame}
+
+\section*{
+%%%
+%%%
+}
+
+\begin{frame}{
+%
+%
+}
+\begin{center}
+Thanks!
+\end{center}
+\end{frame}
+
+\end{document}
+
+% vim: set spell:
