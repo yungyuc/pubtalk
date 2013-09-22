@@ -38,6 +38,7 @@ solvcon.log
 *.vrb
 *.zip
 *_eps/
+.ipynb_checkpoints/
 tmp/
 # 20121203_cython
 20121203_cython/example2b.c

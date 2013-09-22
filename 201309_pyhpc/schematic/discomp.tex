@@ -1,0 +1,46 @@
+% coorType 1 only works for pst-3dplot version 1.83+.
+\psset{unit=0.5 in}
+%\psset{coorType=2,Alpha=135}
+\begin{pspicture}(-4.35,-3)(4.5,2.1)
+
+\psset{linewidth=0.01}
+
+\psframe(-2,0.1)(2,2.0)
+\psframe(-2,1.7)(2,2.0)
+\rput[c](0,1.85){\textbf{control node}}
+\rput[lt](-1.9,1.6){\texttt{case.run():}}
+\rput[lt](-1.6,1.3){\texttt{\# the temporal loop.}}
+\rput[lt](-1.6,1.0){\texttt{while not stop:}}
+\rput[lt](-1.3,0.7){\texttt{launch\_solvers()}}
+\rput[lt](-1.3,0.4){\texttt{sync()}}
+
+\psframe(-4,-2.5)(-0.5,-0.3)
+\psframe(-4,-0.6)(-0.5,-0.3)
+\rput[c](-2.25,-0.45){\textbf{compute node 1}}
+\rput[lt](-3.9,-0.7){\texttt{solver1.march():}}
+\rput[lt](-3.6,-1.0){\texttt{calculate\_flux()}}
+\rput[lt](-3.6,-1.3){\texttt{exchange\_flux()}}
+\rput[lt](-3.6,-1.6){\texttt{calculate\_gradient()}}
+\rput[lt](-3.6,-1.9){\texttt{exchange\_gradient()}}
+\rput[lt](-3.6,-2.2){\texttt{return}}
+
+\psframe(0.5,-2.5)(4,-0.3)
+\psframe(0.5,-0.6)(4,-0.3)
+\rput[c](2.25,-0.45){\textbf{compute node 2}}
+\rput[lt](0.6,-0.7){\texttt{solver2.march():}}
+\rput[lt](0.9,-1.0){\texttt{calculate\_flux()}}
+\rput[lt](0.9,-1.3){\texttt{exchange\_flux()}}
+\rput[lt](0.9,-1.6){\texttt{calculate\_gradient()}}
+\rput[lt](0.9,-1.9){\texttt{exchange\_gradient()}}
+\rput[lt](0.9,-2.2){\texttt{return}}
+
+\pscurve{->}(-1.4,0.6)(-4.2,-0.3)(-4.2,-0.7)(-3.95,-0.8)
+\pscurve{->}(-1.4,0.6)(-2.5,0.05)(-0.3,-0.2)(0,-0.6)(0.55,-0.8)
+\rput[r](-2.2,0.2){\psframebox*[fillstyle=solid]{RPC call}}
+\pscurve{->}(-2.6,-2.3)(4.2,-2.1)(4.1,-0.2)(-0.4,0.3)
+\pscurve{->}(1.9,-2.3)(4.1,-2)(4.1,-0.3)(-0.4,0.3)
+\rput[l](2.2,0.2){\psframebox*[fillstyle=solid]{RPC return}}
+\pcline{<->}(-1.4,-1.4)(0.8,-1.4)
+\pcline{<->}(-0.8,-2.0)(0.8,-2.0)
+
+\end{pspicture}
