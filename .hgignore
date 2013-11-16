@@ -2,6 +2,7 @@ syntax: glob
 setup.cfg
 build
 Thumbs.db
+.DS_Store/
 .sconsign.dblite
 solvcon.log
 ~$*
