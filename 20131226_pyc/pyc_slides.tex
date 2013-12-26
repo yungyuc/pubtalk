@@ -1,0 +1,518 @@
+\documentclass[dvips,xcolor=pst,14pt]{beamer}
+%\documentclass[dvips,handout,xcolor=pst]{beamer}
+%\documentclass[letterpaper]{article}
+%\usepackage{beamerarticle}
+%\newcommand{\newblock}{} % a hack for bibtex.
+\usepackage{color}
+\usepackage{pstricks}
+%\usepackage{hyperref}
+%\usepackage[authoryear]{natbib}
+\usepackage{graphicx}
+\usepackage{multimedia}
+\usepackage{pgfpages}
+\usepackage{arydshln}
+\usepackage{commath}
+\usepackage{vector}
+%\usepackage{cancel}
+\usepackage{ulem}
+\usepackage{listings}
+%\usepackage{times}
+
+\graphicspath{{pyc_eps/}}
+
+\newcommand{\defeq}{\ensuremath{\buildrel {\text{def}}\over{=}}} 
+
+\usetheme{CambridgeUS}
+%\usefonttheme[stillsansseriftext]{serif}
+\usefonttheme[onlymath]{serif}
+
+%\setbeameroption{show notes}
+%\setbeameroption{show only notes}
+%\pgfpagesuselayout{2 on 1}[letterpaper,border shrink=0.2in]
+
+\lstset{basicstyle=\footnotesize\ttfamily,%
+keywordstyle=\color{blue},%
+stringstyle=\color{magenta},%
+commentstyle=\color{green},%
+breaklines=true}
+%\lstset{framextopmargin=50pt,frame=bottomline}
+
+\title[C/C++/Python]{C/C++ for Python's Use: You Wrap It}
+%
+\author[\href{http://solvcon.net/yyc/}{Yung-Yu Chen}]%
+{\href{http://solvcon.net/yyc/}{Yung-Yu Chen} \\ {\scriptsize
+\url{yyc@solvcon.net}}}
+%
+\institute[THF]{The Happy Folk}
+%
+\date[2013/12/26]{December 26, 2013}
+
+\lstset{
+xleftmargin=2em,
+}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+% \begin{frame}{
+% %
+% Our Topics Today
+% %
+% }
+% \tableofcontents
+% \end{frame}
+
+\section{
+%%%
+Why Wrap
+%%%
+}
+
+\begin{frame}{
+%
+Python is Slow, Way Too Slow
+%
+}
+\begin{itemize}
+\item The rule of thumb: Python is \alert{two orders of magnitude slower} than
+C.
+\begin{itemize}
+  \item 10 milliseconds in C: 1 second in Python.
+  \item 8 hours in C: a month in Python.
+\end{itemize}
+\item It's not OK to spend a month on an over-night job.
+\begin{itemize}
+  \item But we just can't lose the productivity by Python.
+  \item So we want to connect Python with C (and/or C++).
+  \item Another case: Python is the thin wrapper of the underlying system.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{
+%
+Ways to Wrapper
+%
+}
+\begin{itemize}
+\item \href{http://cython.org/}{\alert{Cython}} for C and
+\href{http://www.boost.org/doc/libs/1_55_0/libs/python/doc/}%
+{\alert{Boost.Python}} for C++.
+\item There are other options:
+\begin{itemize}
+  \item \href{http://docs.python.org/2/library/ctypes.html}{ctypes} and/or
+  \href{https://bitbucket.org/cffi/cffi}{cffi}.
+  \item \href{http://www.swig.org/}{SWIG}.
+  \item \href{Py++}{http://www.ohloh.net/p/pygccxml}.
+  \item ... and many that we don't talk about.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{
+%
+In Conclusion ...
+%
+}
+\begin{itemize}
+\item If you don't need to deal with C++.  Congratulations.  You can just use
+Cython without worrying anything.
+\item If unfortunately you are working with C++.  Go Boost.Python.
+\item {\small \url{http://docs.python.org/2/c-api/index.html}}
+\begin{itemize}
+  \item That is, use Python C API to make the low-level code available/callable
+  in the Python interpreter.
+  \item Nothing stops you from wrapping by your bare hands with the C API.
+  \item But it's just an unpleasant approach (and error-prone).
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+Boost.Python
+%%%
+}
+
+\begin{frame}{
+%
+Let's Start with the Bad Boy
+%
+}
+\begin{itemize}
+\item C++ and Python both rely on their own OO systems.
+\begin{itemize}
+  \item Both systems are powerful but substantially different.
+\end{itemize}
+\item Boost.Python maps everything between C++ and Python.
+\begin{itemize}
+  \item Functions, classes, exceptions, containers, iterators, etc.
+  \item It's \textit{like} writing Python extension with C++.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Official Boost.Python Hello World
+%
+}
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=c++,numbers=left]
+#include <boost/python.hpp>
+char const* greet() {
+    return "hello, world";
+}
+BOOST_PYTHON_MODULE(hello_ext) {
+    using namespace boost::python;
+    def("greet", greet);
+}
+\end{lstlisting}
+\begin{itemize}
+\item \verb+#include <boost/python.hpp>+: turn on Boost.Python.
+\item \verb+BOOST_PYTHON_MODULE+: make a Python module.
+\item \verb+def("greet", greet)+: wrap a function.
+\end{itemize}
+Done.
+\end{frame}
+
+\begin{frame}{
+%
+Boost.Python Thinks from Bottom up
+%
+}
+\begin{itemize}
+\item It is a C++ library (part of \href{http://boost.org/}{\alert{boost}}).
+It operates around a fundamental C++ code base.
+\item To use the comprehensive wrapping capabilities, one has to write the code
+himself.
+\begin{itemize}
+  \item No code generation other than C++ template.
+  \item C++ only and only C++.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Exceptions
+%
+}
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=c++,numbers=left]
+#include <boost/python.hpp>
+#include <boost/python/errors.hpp>
+void translate(const SomeException &err) {
+    PyErr(SetString(PyExc_MemoryError, err.what());
+}
+BOOST_PYTHON_MODULE(error_ext) {
+    using namespace boost::python;
+    register_exception_translator<SomeException>(translate);
+}
+\end{lstlisting}
+\begin{itemize}
+\item \verb+#include <boost/python/errors.hpp>+
+\item \verb+translate()+
+\item \verb+register_exception_translator+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Iterators
+%
+}
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=c++,numbers=left]
+#include <boost/python.hpp>
+#include <list>
+struct Iterable {
+  typedef std::list<int>::iterator iterator;
+  iterator begin() { m_data.begin(); }
+  iterator end() { m_data.end(); }
+  std::list<int> m_data;
+}
+BOOST_PYTHON_MODULE(iter_ext) {
+  using namespace boost::python;
+  class_<Iterable>("Iterable", init<>))
+  .add_property("iter", range(Iterable::begin, Iterable::end))
+  .def("__iter__", range(Iterable::begin, Iterable::end))
+  ;
+}
+\end{lstlisting}
+\begin{itemize} \small
+\item \verb+boost::python::range+: iterate from begin to end.
+\item Alternately, \verb+__getitem__+ and \verb+__len__+ can help.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Bi-Directional Conversions
+%
+}
+\begin{itemize}
+\item Python has GC while C++ doesn't: conversions of objects usually need to
+construct intermediate objects.
+\begin{itemize}
+  \item It's more complex when a container is involved.
+\end{itemize}
+\item What to look for:
+\begin{itemize}
+  \item \verb+to_python_converter+: take C++ object and expose it to Python.
+  \item \verb+boost::python::converter::registry+: take Python object and give
+  it to C++.
+\end{itemize}
+\item When exchanging containers or large objects, using
+\verb+boost::shared_ptr+ as a holding type helps.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Obvious Caveats
+%
+}
+\begin{itemize}
+\item We need basic understanding about the CPython memory management.
+\begin{itemize}
+  \item Ownership of references for reference counting: {\scriptsize
+  \url{http://docs.python.org/2/c-api/intro.html#reference-count-details}}
+\end{itemize}
+\item Be very careful about passing objects across the interpreter barrier.
+\begin{itemize}
+  \item Do not return intermediates, although Boost.Python checks for invalid
+  returns.
+  \item Some return policy copies objects.  It can hit the performance for
+  large objects, or give wrong results for containers.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+Cython
+%%%
+}
+
+\begin{frame}[fragile]{
+%
+What Is Cython?
+%
+}
+\begin{itemize}
+\item Cython generates C code from Python.
+\begin{itemize}
+  \item We need to use its command-line (\verb+cython+) like a compiler.
+\end{itemize}
+\item The generated code contains Python C API calls.
+\begin{itemize}
+  \item Can interface to both the existing \alert{C} and \alert{C++} code.
+\end{itemize}
+\item Some constructs can be translated into native C, and get utmost speed-up.
+\item \url{http://www.cython.org/}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Cython is a Language
+%
+}
+\begin{itemize}
+\item Cython extends Python.  It is a \alert{superset} of Python.
+\begin{itemize}
+\item When compiling {\color{red}\verb+.py+} files, of course only Python
+syntax can be used.
+\end{itemize}
+\item If Cython-specific syntax is used, the source code can no longer be run
+by a vanilla Python VM.
+\begin{itemize}
+\item It should be saved as a {\color{red}\verb+.pyx+} file and compiled by
+Cython compiler to binary.
+\end{itemize}
+\item The Cython add-on helps to generate faster code and adapt to various
+libraries.
+\item It's a top-down tool, in contrast to Boost.Python.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Call C from Cython/Python
+%
+}
+Let's say we have a C function \verb+caction()+:
+\lstinputlisting[basicstyle=\scriptsize\ttfamily,language=C,numbers=left]{example2.c}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Cython Let You Call C
+%
+}
+\lstinputlisting[basicstyle=\scriptsize\ttfamily,language=Python,numbers=left]{example2c.pyx}
+\begin{itemize}
+\item \verb+cdef extern+: tells Cython that we have a C function to be used.
+\item Then we just use it.  Cython takes care of the Python C API boilerplates.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Useful Syntax for Wrapping
+%
+}
+\begin{itemize}
+\item \verb+cdef extern from "header.h":+
+\begin{itemize}
+  \item Allows Cython to check the declarations from outside headers.
+\end{itemize}
+\item \verb+cdef public:+
+\begin{itemize}
+  \item Allows Cython to generates C header files for inclusion in other C
+  code.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{
+%%
+High-Performance Cython
+%%
+}
+
+\begin{frame}[fragile]{
+%
+Cython Is for Number-Crunching
+%
+}
+Consider the Python version "action":
+\lstinputlisting[basicstyle=\tiny\ttfamily,language=Python,numbers=left]{example2d.pyx}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Let's See the Speed-Up
+%
+}
+\begin{itemize}
+\item C version runs 51.4 milliseconds; Python version runs 5.74 seconds.
+\item 5.74 sec / 51.4 msec = 106 times faster.
+\item If our code is for number-crunching (calculation takes the majority of
+time), Python + Cython will deliver C-like performance.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Technique \#1: Static Typing
+%
+}
+\begin{itemize}
+\item Just prefix ``{\color{red}\verb+cdef int+}'' to our counter:
+\begin{lstlisting}[basicstyle=\scriptsize\ttfamily,language=Python,escapechar=!]
+def action():
+    !\colorbox{red}{cdef int}! it = 0
+    while it < 1000000:
+        it += 1
+    print it
+\end{lstlisting}
+\item Then 16 times faster. (3.01 msec vs 49 msec)
+\begin{lstlisting}[language=bash]
+> python -m timeit -s 'from example1d import action' 'action()'
+100 loops, best of 3: 3.01 msec per loop
+\end{lstlisting}
+\item Because Cython can use the type information to generate native C code
+instead of C API calls.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Technique \#2: Direct Indexing
+%
+}
+Provide array dimensions for direct indexing:
+\begin{lstlisting}[basicstyle=\tiny\ttfamily,language=Python,numbers=left,escapechar=!]
+import numpy as np
+cimport numpy as cnp
+def action():
+    !\colorbox{red}{cdef cnp.ndarray[cnp.double\_t, ndim=2]}! arr0 = np.empty([1000,1000], dtype='float64')
+    arr0.fill(0)
+    !\colorbox{red}{cdef cnp.ndarray[cnp.double\_t, ndim=2]}! arr1 = np.empty([1000,1000], dtype='float64')
+    arr1.fill(1)
+    cdef int it = 1
+    cdef int jt
+    while it < 999:
+        jt = 1
+        while jt < 999:
+            arr0[it, jt] += arr1[it-1, jt-1]
+            arr0[it, jt] += arr1[it-1, jt  ]
+            arr0[it, jt] += arr1[it-1, jt+1]
+            arr0[it, jt] += arr1[it  , jt+1]
+            arr0[it, jt] += arr1[it+1, jt+1]
+            arr0[it, jt] += arr1[it+1, jt  ]
+            arr0[it, jt] += arr1[it+1, jt-1]
+            arr0[it, jt] += arr1[it  , jt-1]
+            jt += 1
+        it += 1
+    assert 7968032 == arr0.sum()
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{
+%
+Direct Indexing Is Way Faster
+%
+}
+\begin{itemize}
+\item Use NumPy API for indexing: 5.74 sec.
+\begin{lstlisting}[language=bash]
+> python -m timeit -s 'from example2d import action' 'action()'
+10 loops, best of 3: 5.74 sec per loop
+\end{lstlisting}
+\item Direct indexing: 139 msec. 
+\begin{lstlisting}[language=bash]
+> python -m timeit -s 'from example2a import action' 'action()'
+10 loops, best of 3: 139 msec per loop
+\end{lstlisting}
+\item Static typing and direct indexing make the code run \alert{41} times
+faster.
+\item It's only 139 msec / 51.4 msec = 2.7 times slower than the C version.
+\begin{itemize}
+  \item Good enough for many uses.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{
+%%%
+Conclusions
+%%%
+}
+
+\begin{frame}{
+%
+Choose Your Wrapping Tool
+%
+}
+\begin{itemize}
+\item Python is two orders of magnitude slower than C.
+\item If you want to wrap C++, choose Boost.Python.
+\begin{itemize}
+  \item It thinks around C++.  The wrapper should be built from bottom up.
+\end{itemize}
+\item If you want to wrap C, choose Cython.
+\begin{itemize}
+  \item It thinks around Python.  The wrapper should be built from top down.
+\end{itemize}
+\item When working with NumPy arrays, static typing along with direct indexing
+makes the number-crunching very fast, just 2 times slower than the C counter
+part.
+\end{itemize}
+\end{frame}
+
+\end{document}
+
+% vim: set spell:
